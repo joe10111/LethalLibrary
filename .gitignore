@@ -1,13 +1,13 @@
-# Ignore the following auto-generated directories and files:
-
-# Binaries and intermediate build files
+# Ignore intermediate build files
 Binaries/
 DerivedDataCache/
+Intermediate/
 Saved/
 
-# Visual Studio and Xcode temporary files
+# Ignore IDE-specific files
 .vscode/
 .vs/
+.idea/
 *.VC.db
 *.opensdf
 *.opendb
@@ -18,11 +18,21 @@ Saved/
 *.xcodeproj
 *.xcworkspace
 
-# Optional: ignore local config files
-Config/DefaultEditor.ini
-Config/DefaultEditorUserSettings.ini
+# Ignore auto-generated files
+*.log
+*.tmp
+*.obj
 
-# Ensure project files are included (optional)
-!*.sln
-!*.csproj
-!*.vcxproj
+# Track Unreal Engine assets
+*.uasset
+*.umap
+
+# Track project files
+*.uproject
+*.sln
+*.csproj
+*.vcxproj
+
+# Optional: ignore local config files
+Config/DefaultEditorUserSettings.ini
+Config/DefaultEditor.ini
