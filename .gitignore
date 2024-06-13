@@ -1,14 +1,23 @@
-Binaries
-DerivedDataCache
-Intermediate
-Saved
-.vscode
-.vs
+# Ignore the following auto-generated directories and files:
+# Binaries and intermediate build files
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Visual Studio and Xcode temporary files
+.vscode/
+.vs/
 *.VC.db
 *.opensdf
 *.opendb
 *.sdf
-*.sln
 *.suo
+
+# Ignore Xcode projects
 *.xcodeproj
 *.xcworkspace
+
+# Optional: ignore local config files
+Config/DefaultEditor.ini
+Config/DefaultEditorUserSettings.ini
