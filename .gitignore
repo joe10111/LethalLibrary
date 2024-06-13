@@ -1,8 +1,8 @@
 # Ignore the following auto-generated directories and files:
+
 # Binaries and intermediate build files
 Binaries/
 DerivedDataCache/
-Intermediate/
 Saved/
 
 # Visual Studio and Xcode temporary files
@@ -21,3 +21,8 @@ Saved/
 # Optional: ignore local config files
 Config/DefaultEditor.ini
 Config/DefaultEditorUserSettings.ini
+
+# Ensure project files are included (optional)
+!*.sln
+!*.csproj
+!*.vcxproj
