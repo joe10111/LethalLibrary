@@ -23,16 +23,6 @@ Saved/
 *.tmp
 *.obj
 
-# Track Unreal Engine assets
-*.uasset
-*.umap
-
-# Track project files
-*.uproject
-*.sln
-*.csproj
-*.vcxproj
-
 # Optional: ignore local config files
 Config/DefaultEditorUserSettings.ini
 Config/DefaultEditor.ini
