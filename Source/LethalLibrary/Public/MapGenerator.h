@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Tile.h"
+#include "Cell.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "MapGenerator.generated.h"
