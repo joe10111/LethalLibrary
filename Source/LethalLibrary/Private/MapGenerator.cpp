@@ -15,7 +15,11 @@ UMapGenerator::UMapGenerator()
 
 FString UMapGenerator::TestFunction() 
 {
-	return "It Works maybe?";
+	Tile testTile = Tile();
+	testTile.North = 1;
+	testTile.West = 1;
+	testTile.UpdateShorthand();
+	return testTile.Shorthand;
 }
 
 
