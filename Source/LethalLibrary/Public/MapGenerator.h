@@ -48,4 +48,6 @@ public:
 private:
 	int NumRows;
 	int NumColumns;
+
+	TArray<Tile> GetTileOptions();
 };

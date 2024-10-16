@@ -17,6 +17,7 @@ public:
 	int West;
 
 	Tile();
+	Tile(int north, int east, int south, int west);
 	~Tile();
 
 	void UpdateShorthand();

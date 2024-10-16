@@ -12,6 +12,15 @@ Tile::Tile()
 	West = -1;
 }
 
+Tile::Tile(int north, int east, int south, int west)
+{
+	Shorthand = "";
+	North = north;
+	East = east;
+	South = south;
+	West = west;
+}
+
 Tile::~Tile()
 {
 }
