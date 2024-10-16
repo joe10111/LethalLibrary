@@ -51,7 +51,7 @@ FString UMapGenerator::GetGridAsString()
 		for (int col = 0; col < NumColumns; col++)
 		{
 			gridAsString += "[";
-			gridAsString += FString::FromInt(row) + "," + FString::FromInt(col);
+			gridAsString += FString::FromInt(CellGrid[row][col].Row) + "," + FString::FromInt(CellGrid[row][col].Col);
 			gridAsString += "]";
 		}
 		gridAsString += "\n";
