@@ -8,26 +8,44 @@
 #include "Components/ActorComponent.h"
 #include "MapGenerator.generated.h"
 
+USTRUCT()
+struct FCell2DArray {
+	GENERATED_BODY()
+public:
+
+	TArray<Cell> Cells;
+
+	Cell operator[] (int i) {
+		return Cells[i];
+	}
+
+	void Add(Cell cell) {
+		Cells.Add(cell);
+	}
+};
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LETHALLIBRARY_API UMapGenerator : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
+	TArray<FCell2DArray> CellGrid;
+
 	// Sets default values for this component's properties
 	UMapGenerator();
 
 	UFUNCTION(BlueprintCallable)
 	FString TestFunction();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	UFUNCTION(BlueprintCallable)
+	void GenerateNewGrid(int rows, int cols);
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable)
+	FString GetGridAsString();
 
-		
+private:
+	int NumRows;
+	int NumColumns;
 };
