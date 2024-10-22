@@ -5,11 +5,9 @@
 // Sets default values for this component's properties
 UMapGenerator::UMapGenerator()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	// Default values in case, should be overwritten
+	NumRows = 5;
+	NumColumns = 5;
 }
 
 FString UMapGenerator::TestFunction() 
@@ -26,8 +24,14 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 	// pretty sure this does what I think it does
 	CellGrid.Reset();
 
-	NumRows = rows;
-	NumColumns = cols;
+	if (rows > 0) 
+	{
+		NumRows = rows;
+	}
+	if (cols > 0)
+	{
+		NumColumns = cols;
+	}
 
 	// List of possible tiles for each cell
 	TArray<Tile> tileOptions = GetTileOptions();
@@ -38,7 +42,10 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 	// Create grid of empty cells
 	for (int row = 0; row < rows; row++) 
 	{
+		// Add empty row
 		CellGrid.Add(FCell2DArray());
+
+		// Fill rows with Cells containing their row, column, and all possible tiles 
 		for (int col = 0; col < cols; col++) 
 		{
 			Cell cell = Cell();
@@ -47,30 +54,39 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 			cell.Options.Append(tileOptions);
 
 			CellGrid[row].Add(cell);
+
+			// Add cell to TArray of cells that still need to be collapsed
 			cellsToCollapse.Add(cell);
-			
-			// update method attempt
-			cell.Value.Shorthand = "Updated";
-			UpdateCellInGrid(cell);
 		}
 	}
 
+	// Initial rules pass
 	InitialTileRules(tileOptions);
+	// Update cellsToCollapse
 	for (int i = 0; i < cellsToCollapse.Num(); i++)
 	{
 		Cell cellToUpdate = cellsToCollapse[i];
 		cellsToCollapse[i] = CellGrid[cellToUpdate.Row][cellToUpdate.Col];
 	}
 
+	// Collapse cells until all have been collapsed
 	while (cellsToCollapse.Num() > 0)
 	{
+		// Sort by number of remaining options to find cell with fewest options
 		cellsToCollapse.Sort(Cell::CompareOptionsCount);
+
+		// Collapse cell
 		Cell nextCell = cellsToCollapse[0];
 		Cell updatedCell = Collapse(nextCell);
+
+		// Update cell and surrounding cells
 		UpdateCellInGrid(updatedCell);
 		UpdateSurroundingOptions(updatedCell, tileOptions);
+
+		// Remove collapsed cell from list of cells to be collapsed
 		cellsToCollapse.RemoveAt(0);
 
+		// Update cellsToCollapse
 		for (int i = 0; i < cellsToCollapse.Num(); i++)
 		{
 			Cell cellToUpdate = cellsToCollapse[i];
@@ -79,6 +95,7 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 	}
 }
 
+// Returns string representation of the grid using each tile's shorthand (Cell.Value.Shorthand)
 FString UMapGenerator::GetGridAsString() 
 {
 	FString gridAsString = "";
@@ -98,6 +115,7 @@ FString UMapGenerator::GetGridAsString()
 	return gridAsString;
 }
 
+// Get TArray of all possible tiles
 TArray<Tile> UMapGenerator::GetTileOptions() 
 {
 	TArray<Tile> tileOptions = TArray<Tile>();
@@ -144,6 +162,7 @@ TArray<Tile> UMapGenerator::GetTileOptions()
 	return tileOptions;
 }
 
+// Set a Cell's tile value randomly from remaining tile options
 Cell UMapGenerator::Collapse(Cell cell)
 {
 	if (cell.Options.Num() == 0)
@@ -160,6 +179,7 @@ Cell UMapGenerator::Collapse(Cell cell)
 	return cell;
 }
 
+// Remove conflicting tile options from adjacent Cells in the grid
 void UMapGenerator::UpdateSurroundingOptions(Cell cell, TArray<Tile> tileOptions)
 {
 	// Error Cell
@@ -290,6 +310,7 @@ void UMapGenerator::UpdateCellInGrid(Cell cell)
 	CellGrid[cell.Row].Update(cell);
 }
 
+// Remove Invalid tile options from entire grid once before starting collapsing
 void UMapGenerator::InitialTileRules(TArray<Tile> tileOptions)
 {
 	for (int row = 0; row < NumRows; row++)
