@@ -19,4 +19,9 @@ public:
 
 	Cell();
 	~Cell();
+
+	static bool CompareOptionsCount(const Cell& cellA, const Cell& cellB)
+	{
+		return cellA.Options.Num() < cellB.Options.Num();
+	}
 };

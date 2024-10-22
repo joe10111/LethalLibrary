@@ -28,8 +28,14 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 
 	NumRows = rows;
 	NumColumns = cols;
+
+	// List of possible tiles for each cell
 	TArray<Tile> tileOptions = GetTileOptions();
 
+	// List of all cells in the grid to be sorted later
+	TArray<Cell> cellsToCollapse = TArray<Cell>();
+
+	// Create grid of empty cells
 	for (int row = 0; row < rows; row++) 
 	{
 		CellGrid.Add(FCell2DArray());
@@ -41,7 +47,21 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 			cell.Options.Append(tileOptions);
 
 			CellGrid[row].Add(cell);
+			cellsToCollapse.Add(cell);
+			
+			// update method attempt
+			cell.Value.Shorthand = "Updated";
+			UpdateCellInGrid(cell);
 		}
+	}
+
+	while (cellsToCollapse.Num() > 0)
+	{
+		cellsToCollapse.Sort(Cell::CompareOptionsCount);
+		Cell& nextCell = cellsToCollapse[0];
+		Cell updatedCell = Collapse(nextCell);
+		UpdateCellInGrid(updatedCell);
+		cellsToCollapse.RemoveAt(0);
 	}
 }
 
@@ -54,7 +74,8 @@ FString UMapGenerator::GetGridAsString()
 		for (int col = 0; col < NumColumns; col++)
 		{
 			gridAsString += "[";
-			gridAsString += FString::FromInt(CellGrid[row][col].Row) + "," + FString::FromInt(CellGrid[row][col].Col);
+			gridAsString += CellGrid[row][col].Value.Shorthand;
+			//gridAsString += FString::FromInt(CellGrid[row][col].Row) + "," + FString::FromInt(CellGrid[row][col].Col);
 			gridAsString += "]";
 		}
 		gridAsString += "\n";
@@ -107,4 +128,26 @@ TArray<Tile> UMapGenerator::GetTileOptions()
 	}
 
 	return tileOptions;
+}
+
+Cell UMapGenerator::Collapse(Cell& cell)
+{
+	if (cell.Options.Num() == 0)
+	{
+		cell.Value.Shorthand = "Error";
+		cell.Collapsed = true;
+	}
+	else 
+	{
+		cell.Value = cell.Options[FMath::RandRange(0, cell.Options.Num() - 1)];
+		cell.Collapsed = true;
+		cell.Value.UpdateShorthand();
+	}
+	return cell;
+}
+
+// This is pretty dumb but it's the only way I got this to work right so idk
+void UMapGenerator::UpdateCellInGrid(Cell cell)
+{
+	CellGrid[cell.Row].Update(cell);
 }

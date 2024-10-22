@@ -22,6 +22,14 @@ public:
 	void Add(Cell cell) {
 		Cells.Add(cell);
 	}
+
+	void Update(Cell cell) {
+		Cells[cell.Col] = cell;
+	}
+
+	Cell* GetCellPointer(int i) {
+		return &Cells[i];
+	}
 };
 
 
@@ -50,4 +58,6 @@ private:
 	int NumColumns;
 
 	TArray<Tile> GetTileOptions();
+	Cell Collapse(Cell& cell);
+	void UpdateCellInGrid(Cell cell);
 };
