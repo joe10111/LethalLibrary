@@ -61,4 +61,5 @@ private:
 	Cell Collapse(Cell cell);
 	void UpdateCellInGrid(Cell cell);
 	void UpdateSurroundingOptions(Cell cell, TArray<Tile> tileOptions);
+	void InitialTileRules(TArray<Tile> tileOptions);
 };

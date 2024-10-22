@@ -55,6 +55,13 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 		}
 	}
 
+	InitialTileRules(tileOptions);
+	for (int i = 0; i < cellsToCollapse.Num(); i++)
+	{
+		Cell cellToUpdate = cellsToCollapse[i];
+		cellsToCollapse[i] = CellGrid[cellToUpdate.Row][cellToUpdate.Col];
+	}
+
 	while (cellsToCollapse.Num() > 0)
 	{
 		cellsToCollapse.Sort(Cell::CompareOptionsCount);
@@ -281,4 +288,62 @@ void UMapGenerator::UpdateSurroundingOptions(Cell cell, TArray<Tile> tileOptions
 void UMapGenerator::UpdateCellInGrid(Cell cell)
 {
 	CellGrid[cell.Row].Update(cell);
+}
+
+void UMapGenerator::InitialTileRules(TArray<Tile> tileOptions)
+{
+	for (int row = 0; row < NumRows; row++)
+	{
+		for (int col = 0; col < NumColumns; col++)
+		{
+			Cell cell = CellGrid[row][col];
+
+			// Top Row
+			if (cell.Row == 0)
+			{
+				for (Tile tile : tileOptions)
+				{
+					if (tile.North == 1)
+					{
+						cell.Options.Remove(tile);
+					}
+				}
+			}
+			// Bottom Row
+			if (cell.Row == NumRows - 1)
+			{
+				for (Tile tile : tileOptions)
+				{
+					if (tile.South == 1)
+					{
+						cell.Options.Remove(tile);
+					}
+				}
+			}
+			// Left Column
+			if (cell.Col == 0)
+			{
+				for (Tile tile : tileOptions)
+				{
+					if (tile.West == 1)
+					{
+						cell.Options.Remove(tile);
+					}
+				}
+			}
+			// Right Column
+			if (cell.Col == NumColumns - 1)
+			{
+				for (Tile tile : tileOptions)
+				{
+					if (tile.East == 1)
+					{
+						cell.Options.Remove(tile);
+					}
+				}
+			}
+
+			UpdateCellInGrid(cell);
+		}
+	}
 }
