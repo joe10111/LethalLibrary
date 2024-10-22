@@ -58,6 +58,7 @@ private:
 	int NumColumns;
 
 	TArray<Tile> GetTileOptions();
-	Cell Collapse(Cell& cell);
+	Cell Collapse(Cell cell);
 	void UpdateCellInGrid(Cell cell);
+	void UpdateSurroundingOptions(Cell cell, TArray<Tile> tileOptions);
 };

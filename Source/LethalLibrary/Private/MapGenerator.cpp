@@ -58,10 +58,17 @@ void UMapGenerator::GenerateNewGrid(int rows, int cols)
 	while (cellsToCollapse.Num() > 0)
 	{
 		cellsToCollapse.Sort(Cell::CompareOptionsCount);
-		Cell& nextCell = cellsToCollapse[0];
+		Cell nextCell = cellsToCollapse[0];
 		Cell updatedCell = Collapse(nextCell);
 		UpdateCellInGrid(updatedCell);
+		UpdateSurroundingOptions(updatedCell, tileOptions);
 		cellsToCollapse.RemoveAt(0);
+
+		for (int i = 0; i < cellsToCollapse.Num(); i++)
+		{
+			Cell cellToUpdate = cellsToCollapse[i];
+			cellsToCollapse[i] = CellGrid[cellToUpdate.Row][cellToUpdate.Col];
+		}
 	}
 }
 
@@ -130,7 +137,7 @@ TArray<Tile> UMapGenerator::GetTileOptions()
 	return tileOptions;
 }
 
-Cell UMapGenerator::Collapse(Cell& cell)
+Cell UMapGenerator::Collapse(Cell cell)
 {
 	if (cell.Options.Num() == 0)
 	{
@@ -144,6 +151,130 @@ Cell UMapGenerator::Collapse(Cell& cell)
 		cell.Value.UpdateShorthand();
 	}
 	return cell;
+}
+
+void UMapGenerator::UpdateSurroundingOptions(Cell cell, TArray<Tile> tileOptions)
+{
+	// Error Cell
+	if (cell.Value.North == -1 || cell.Value.East == -1 || cell.Value.South == -1 || cell.Value.West == -1)
+	{
+		return;
+	}
+
+	int row = cell.Row;
+	int col = cell.Col;
+
+	// Update North
+	if (row - 1 >= 0)
+	{
+		Cell northCell = CellGrid[row - 1][col];
+
+		if (cell.Value.North == 1)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.South != 1)
+				{
+					northCell.Options.Remove(tile);
+				}
+			}
+		}
+		else if (cell.Value.North == 0)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.South == 1)
+				{
+					northCell.Options.Remove(tile);
+				}
+			}
+		}
+		UpdateCellInGrid(northCell);
+	}
+
+	// Update East
+	if (col + 1 < NumColumns)
+	{
+		Cell eastCell = CellGrid[row][col + 1];
+
+		if (cell.Value.East == 1)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.West != 1)
+				{
+					eastCell.Options.Remove(tile);
+				}
+			}
+		}
+		else if (cell.Value.East == 0)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.West == 1)
+				{
+					eastCell.Options.Remove(tile);
+				}
+			}
+		}
+		UpdateCellInGrid(eastCell);
+	}
+
+	// Update South
+	if (row + 1 < NumRows)
+	{
+		Cell southCell = CellGrid[row + 1][col];
+
+		if (cell.Value.South == 1)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.North != 1)
+				{
+					southCell.Options.Remove(tile);
+				}
+			}
+		}
+		else if (cell.Value.South == 0)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.North == 1)
+				{
+					southCell.Options.Remove(tile);
+				}
+			}
+		}
+		UpdateCellInGrid(southCell);
+	}
+
+	// Update West
+	if (col - 1 >= 0)
+	{
+		Cell westCell = CellGrid[row][col - 1];
+
+		if (cell.Value.West == 1)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.East != 1)
+				{
+					westCell.Options.Remove(tile);
+				}
+			}
+		}
+		else if (cell.Value.West == 0)
+		{
+			for (Tile tile : tileOptions)
+			{
+				if (tile.East == 1)
+				{
+					westCell.Options.Remove(tile);
+				}
+			}
+		}
+		UpdateCellInGrid(westCell);
+	}
 }
 
 // This is pretty dumb but it's the only way I got this to work right so idk

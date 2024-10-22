@@ -21,4 +21,12 @@ public:
 	~Tile();
 
 	void UpdateShorthand();
+
+	bool operator==(const Tile& other) const {
+		return 
+			this->North == other.North &&
+			this->East == other.East &&
+			this->South == other.South &&
+			this->West == other.West;
+	}
 };
