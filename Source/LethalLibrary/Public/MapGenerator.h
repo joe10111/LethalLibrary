@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetGridAsString();
 
+	UFUNCTION(BlueprintCallable)
+	bool DoorsMatchTileInGrid(int row, int col, int north, int east, int south, int west);
+
 private:
 	int NumRows;
 	int NumColumns;

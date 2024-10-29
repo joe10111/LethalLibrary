@@ -115,6 +115,15 @@ FString UMapGenerator::GetGridAsString()
 	return gridAsString;
 }
 
+bool UMapGenerator::DoorsMatchTileInGrid(int row, int col, int north, int east, int south, int west)
+{
+	Tile tile = CellGrid[row][col].Value;
+	return (tile.North == north &&
+		tile.East == east &&
+		tile.South == south &&
+		tile.West == west);
+}
+
 // Get TArray of all possible tiles
 TArray<Tile> UMapGenerator::GetTileOptions() 
 {
