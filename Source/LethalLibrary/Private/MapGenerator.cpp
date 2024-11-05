@@ -322,14 +322,29 @@ void UMapGenerator::UpdateCellInGrid(Cell cell)
 // Remove Invalid tile options from entire grid once before starting collapsing
 void UMapGenerator::InitialTileRules(TArray<Tile> tileOptions)
 {
+	// Problem tile for starting room logic
+	Tile endN = Tile(1, 0, 0, 0);
+
 	for (int row = 0; row < NumRows; row++)
 	{
 		for (int col = 0; col < NumColumns; col++)
 		{
 			Cell cell = CellGrid[row][col];
 
+			// Starting Room Entrance
+			if (cell.Col == FMath::Floor(NumColumns / 2) && cell.Row == 0)
+			{
+				for (Tile tile : tileOptions)
+				{
+					if (tile.North != 1 || tile == endN)
+					{
+						cell.Options.Remove(tile);
+					}
+				}
+			}
+
 			// Top Row
-			if (cell.Row == 0)
+			else if (cell.Row == 0)
 			{
 				for (Tile tile : tileOptions)
 				{
